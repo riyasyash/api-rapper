@@ -1,5 +1,3 @@
-require 'rest-client'
-
 class Service
 
   include Singleton
@@ -18,11 +16,13 @@ class Service
   def method_missing(meth, *args, &block)
     web_api = self.api_call_map[meth.to_s]
     if web_api
-      self.make_web_call(web_api, *args)
+      make_web_call(web_api, *args)
     else
       super
     end
   end
+
+  private
 
   def make_web_call(web_api, *args)
     params_hash = (args[-1] || {})
@@ -30,8 +30,6 @@ class Service
     response = self.rest_client_req.execute(request_hash)
     ServiceResponse.new(response)
   end
-
-  private
 
   def contruct_request_hash(web_api, params_hash)
     url_substitution_hash = (params_hash[:url_params] || {})
