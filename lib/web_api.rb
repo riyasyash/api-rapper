@@ -15,8 +15,12 @@ class WebApi
     self
   end
 
-  def url
-    (@global_config.value_for_config("host_url") || "") + @url
+  def url(url_params={})
+    host_name = (@global_config.value_for_config("host_url") || "")
+    url_suffix = (host_name[-1] == "/" && @url[0] == "/") ? @url[1..-1] : @url
+    complete_url = host_name + url_suffix
+    complete_url = substitute_values(complete_url, url_params)
+    complete_url
   end
 
   def http_method
@@ -26,14 +30,6 @@ class WebApi
   def method(name)
     return unless is_valid_method(name)
     @method_name = name.downcase.to_sym
-  end
-
-  def req_attrs(attrs)
-    self.req_params = attrs
-  end
-
-  def resp_attrs(attrs)
-    self.resp_params = attrs
   end
 
   def http_headers
@@ -57,6 +53,12 @@ class WebApi
 
   def is_valid_url(url)
     !!url && !(url.strip.empty?)
+  end
+
+  def substitute_values(str, value_hash)
+    return str if value_hash.empty?
+    value_hash = value_hash.inject({}) { |h, (k,v)| h[k.to_sym] = v; h }
+    str % value_hash
   end
 
 end

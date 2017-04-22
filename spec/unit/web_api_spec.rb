@@ -34,6 +34,8 @@ describe WebApi do
 
   context "url" do
 
+    let(:global_config) { Class.new(GlobalConfig).instance }
+
     it "should be configured from url value" do
       api = WebApi.new.init("sample", "/sample")
 
@@ -54,6 +56,32 @@ describe WebApi do
       end
     end
 
+    it "should be returned with host name appended from global config" do
+      global_config.add_config("host_url", "http://requestb.in")
+      api = WebApi.new(global_config).init("sample", "/sample") { method :get }
+
+      expect(api.url).to eq("http://requestb.in/sample")
+    end
+
+    it "should be formatted to remove redundant slashes" do
+      global_config.add_config("host_url", "http://requestb.in/")
+      api = WebApi.new(global_config).init("sample", "/sample") { method :get }
+
+      expect(api.url).to eq("http://requestb.in/sample")
+    end
+
+    it "should be only relative url when host url is not present" do
+      api = WebApi.new(global_config).init("sample", "/sample") { method :get }
+
+      expect(api.url).to eq("/sample")
+    end
+
+    it "should be interpolated with passed in hash to dynamically poplate values" do
+      api = WebApi.new(global_config).init("sample", "/sample/%{id}/%{name}") { method :get }
+
+      expect(api.url({id: "1", "name": "twilo"})).to eq("/sample/1/twilo")
+    end
+
   end
 
   context "headers" do
@@ -72,7 +100,7 @@ describe WebApi do
     let(:api_with_dup_headers) do
       WebApi.new.init("sample", "/sample") do
         method :get
-        headers :"content-type" => "application/json", :"content-type" => "text/html"
+        headers :"content-type" => "application/json", "content-type" => "text/html"
       end
     end
 
@@ -98,7 +126,7 @@ describe WebApi do
       expect(api.http_headers).to include({:"content-type" => "application/json"})
     end
 
-    it "should be converted to keep keys as symbol" do
+    it "should have keys converted to a symbol" do
       api = WebApi.new(global_config).init("sample", "/sample") do
         method :get
         headers "content-type" => "application/json"
@@ -108,5 +136,7 @@ describe WebApi do
     end
 
   end
+
+
 
 end
