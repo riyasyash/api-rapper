@@ -25,8 +25,15 @@ class Service
   private
 
   def make_web_call(web_api, *args)
+    puts "x"*100
+    puts args
+    puts "x"*100
     params_hash = (args[-1] || {})
     request_hash = contruct_request_hash(web_api, params_hash)
+    puts "*"*100
+    puts "Making call with param hash"
+    puts request_hash
+    puts "*"*100
     response = self.rest_client_req.execute(request_hash)
     ServiceResponse.new(response)
   end
@@ -35,7 +42,7 @@ class Service
     url_substitution_hash = (params_hash[:url_params] || {})
     request_hash = {method: web_api.http_method, url: web_api.url(url_substitution_hash)}
     request_hash[:headers] = web_api.http_headers
-    request_hash[:payload] = param_hash[:payload] if params_hash[:payload]
+    request_hash[:payload] = params_hash[:payload] if params_hash[:payload]
     request_hash
   end
 

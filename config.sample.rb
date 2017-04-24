@@ -1,7 +1,7 @@
 WrapperGenerator.config do
 
   host_url "http://google.com"
-  base_headers({"content-type" => "application/json"})
+  headers({"content-type" => "application/json"})
 
   endpoint "ename", "eurl" do |e|
     e.method "POST"

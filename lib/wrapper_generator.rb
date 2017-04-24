@@ -25,8 +25,8 @@ class WrapperGenerator
     self.global_config.add_config("host_url", value)
   end
 
-  def base_headers(header_hash={})
-    self.global_config.add_config("base_headers", header_hash)
+  def headers(header_hash={})
+    self.global_config.add_config("headers", header_hash)
   end
 
 end
