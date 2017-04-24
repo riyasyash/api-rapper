@@ -8,4 +8,8 @@ class ServiceResponse
     @response.body
   end
 
+  def status
+    @response.code
+  end
+
 end
