@@ -11,8 +11,8 @@ class WrapperGenerator
     WrapperGenerator.new.config(&block)
   end
 
-  def config (&block)
-		instance_eval &block if block
+  def config(&block)
+		instance_eval(&block) if block
 		self
 	end
 
@@ -21,8 +21,9 @@ class WrapperGenerator
     self.service.add_api(name, api)
   end
 
-  def host_url(value)
-    self.global_config.add_config("host_url", value)
+  def host_url(value=nil, &block)
+    host = (block ? block.call() : value)
+    self.global_config.add_config("host_url", host)
   end
 
   def headers(header_hash={})
