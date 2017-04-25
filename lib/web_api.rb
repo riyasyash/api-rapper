@@ -12,7 +12,7 @@ class WebApi
   def init(name, url, &block)
     @name = name
     @url = url if is_valid_url(url)
-    instance_eval &block if block
+    instance_eval(&block) if block
     self
   end
 
@@ -42,7 +42,21 @@ class WebApi
   end
 
   def response_handler(handler)
-    @handler = handler
+    begin
+      handler_cls = nil
+      if handler.instance_of? String
+        handler_cls = handler.split("::").inject(Object) { |obj,cls| obj.const_get(cls) }
+      elsif handler.instance_of? Class
+        handler_cls = handler
+      else
+        raise NameError, "Handler should be a Class or String representation of handler class. Found #{handler}."
+      end
+      @handler = handler_cls
+    rescue NameError => e
+      puts "Tried to resolve response handler #{handler}, but failed. Are you sure, class has been loaded? Using default handler."
+      puts e.message
+      @handler = Handlers::Default
+    end
   end
 
   def handler

@@ -137,6 +137,65 @@ describe WebApi do
 
   end
 
+  context "response handler" do
+
+    class TestHandler
+    end
+
+    module Test
+      class ModuleHandler
+      end
+    end
+
+    it "should accept a handler class name" do
+      api = WebApi.new.init("sample", "/sample") do
+        method :get
+        response_handler TestHandler
+      end
+      expect(api.handler).to eq(TestHandler)
+    end
+
+    it "should accept name of response handler as string" do
+      api = WebApi.new.init("sample", "/sample") do
+        method :get
+        response_handler "TestHandler"
+      end
+      expect(api.handler).to eq(TestHandler)
+    end
+
+    it "should resolve handler with module in string name" do
+      api = WebApi.new.init("sample", "/sample") do
+        method :get
+        response_handler "Test::ModuleHandler"
+      end
+      expect(api.handler).to eq(Test::ModuleHandler)
+    end
+
+    it "should assign default handler when not provided" do
+      api = WebApi.new.init("sample", "/sample") do
+        method :get
+      end
+      expect(api.handler).to eq(Handlers::Default)
+    end
+
+    it "should assign default handler when provided handler not found" do
+      api = WebApi.new.init("sample", "/sample") do
+        method :get
+        response_handler "NonExistent"
+      end
+      expect(api.handler).to eq(Handlers::Default)
+    end
+
+    it "should assign default handler when non class object is assigned as handler" do
+      api = WebApi.new.init("sample", "/sample") do
+        method :get
+        response_handler Test
+      end
+      expect(api.handler).to eq(Handlers::Default)
+    end
+
+  end
+
 
 
 end
