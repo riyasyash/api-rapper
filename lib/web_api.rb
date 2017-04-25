@@ -6,6 +6,7 @@ class WebApi
     @global_config = config
     @name, @url, @method_name = nil
     @headers = {}
+    @handler = Handlers::Default
   end
 
   def init(name, url, &block)
@@ -38,6 +39,14 @@ class WebApi
 
   def headers(headers)
     @headers = headers.inject({}) { |h, (k,v)| h[k.to_sym] = v; h }
+  end
+
+  def response_handler(handler)
+    @handler = handler
+  end
+
+  def handler
+    @handler
   end
 
   def valid?
