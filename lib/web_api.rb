@@ -34,7 +34,9 @@ class WebApi
   end
 
   def http_headers
-    (@global_config.value_for_config("headers") || {}).merge(@headers)
+    dynamic_headers = (@global_config.value_for_config("dynamic_headers") || {}).inject({}) {|h, (k,b)| h[k] = b.call(); h }
+    merged_headers = (@global_config.value_for_config("headers") || {}).merge(dynamic_headers)
+    merged_headers.merge(@headers)
   end
 
   def headers(headers)

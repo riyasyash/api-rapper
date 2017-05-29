@@ -30,4 +30,8 @@ class WrapperGenerator
     self.global_config.add_config("headers", header_hash)
   end
 
+  def dynamic_header(key, value, &block)
+    self.global_config.value_for_config("dynamic_headers")[key] = block
+  end
+
 end

@@ -135,6 +135,22 @@ describe WebApi do
       expect(api.http_headers).to eq({:"content-type" => "application/json"})
     end
 
+    it "should allow for dynamic header values" do
+      global_config.add_config("dynamic_headers", {:"request_id" => Proc.new() { "123" }})
+
+      expect(api.http_headers).to eq({:request_id=>"123", :"content-type"=>"application/json"})
+    end
+
+    it "should override dynamic headers with scoped headers" do
+      global_config.add_config("dynamic_headers", {:"request_id" => Proc.new() { "123" }})
+      api = WebApi.new(global_config).init("sample", "/sample") do
+        method :get
+        headers "request_id" => "1111"
+      end
+
+      expect(api.http_headers).to eq({:request_id=>"1111"})
+    end
+
   end
 
   context "response handler" do
