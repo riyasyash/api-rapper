@@ -31,6 +31,7 @@ class WrapperGenerator
   end
 
   def dynamic_header(key, &block)
+    self.global_config.add_config("dynamic_headers", {}) unless self.global_config.value_for_config("dynamic_headers")
     self.global_config.value_for_config("dynamic_headers")[key] = block
   end
 
