@@ -27,7 +27,7 @@ describe Service do
       configure_api
       response = service.sample
 
-      headers = {"content-type":"application/json"}
+      headers = {"content-type" => "application/json"}
       url = "http://requestb.in/sample"
       expect(WebMock).to have_requested(:get, url).with(headers: headers).once
       expect(response.value).to eq("abc")

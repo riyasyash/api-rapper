@@ -79,7 +79,7 @@ describe WebApi do
     it "should be interpolated with passed in hash to dynamically poplate values" do
       api = WebApi.new(global_config).init("sample", "/sample/%{id}/%{name}") { method :get }
 
-      expect(api.url({id: "1", "name": "twilo"})).to eq("/sample/1/twilo")
+      expect(api.url({"id"=> "1", "name"=> "twilo"})).to eq("/sample/1/twilo")
     end
 
   end
@@ -113,10 +113,10 @@ describe WebApi do
     end
 
     it "should merge headers with global headers" do
-      global_config.add_config("headers", {"authorization": "OAuth 1234"})
+      global_config.add_config("headers", {"authorization"=> "OAuth 1234"})
 
       expect(api.http_headers).to include({:"content-type" => "application/json"})
-      expect(api.http_headers).to include({:authorization => "OAuth 1234"})
+      expect(api.http_headers).to include({"authorization"=>"OAuth 1234"})
     end
 
     it "from api config should override global header" do

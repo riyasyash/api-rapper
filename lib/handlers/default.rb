@@ -5,6 +5,7 @@ module Handlers
       @raw_response = raw_response
       @success_response, @error_response = nil
       error_occured? ? (@error_response=@raw_response.body) : (@success_response=@raw_response.body)
+      @success_response=@raw_response.body
     end
 
     def value
