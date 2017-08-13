@@ -26,18 +26,8 @@ class Service
 
   def make_web_call(web_api, *args)
     begin
-      puts "x"*100
-      puts args
-      puts "x"*100
       params_hash = (args[-1] || {})
-      puts "x"*100
-      puts params_hash
-      puts "x"*100
       request_hash = contruct_request_hash(web_api, params_hash)
-      puts "*"*100
-      puts "Making call with param hash"
-      puts request_hash
-      puts "*"*100
       response = self.rest_client_req.execute(request_hash)
       web_api.handler.new(response)
     rescue RestClient::ExceptionWithResponse => e
