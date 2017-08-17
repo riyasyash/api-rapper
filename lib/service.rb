@@ -41,6 +41,7 @@ class Service
     request_hash = {method: web_api.http_method, url: web_api.url(url_substitution_hash)}
     request_hash[:headers] = web_api.http_headers
     request_hash[:payload] = params_hash[:payload] if params_hash[:payload]
+    request_hash[:timeout] = 600
     request_hash
   end
 
